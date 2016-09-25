@@ -3,7 +3,7 @@
 ;; Copyright (C) 2016 by lujun9972
 
 ;; Author: DarkSun <lujun9972@gmail.com>
-;; URL: https://github.com/syohex/emacs-podcaster
+;; URL: https://github.com/lujun9972/podcaster
 ;; Version: 0.01
 ;; Package-Requires: ((cl-lib "0.5"))
 
@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; podcaster.el is a emacs podcast client
+;; podcaster.el is an emacs podcast client which is derived from syohex's emacs-rebuildfm
 ;;
 ;; podcaster.el provides showing podscasts list.
 ;; Its actions are
@@ -60,8 +60,7 @@ to open mp3 URL."
   :type 'string
   :group 'podcaster)
 
-;; (nnrss-fetch  "http://feeds.rebuild.fm/podcaster")
-;; (nnrss-fetch "https://ipn.li/kernelpanic/feed")
+;; (setq podcaster--feeds-url   "http://sachachua.com/blog/tag/emacs-chat/podcast" )
 
 (defsubst podcaster--extract-tag-value (tag tree)
   (cadr (assoc-default tag tree)))
@@ -90,7 +89,7 @@ to open mp3 URL."
         (podcaster--get-feeds new-feed-url)
       (mapcar #'podcaster--construct-item items))))
 
-;; (podcaster--get-feeds   "https://ipn.li/kernelpanic/feed")
+;; (podcaster--get-feeds  "http://sachachua.com/blog/tag/emacs-chat/podcast")
 
 (defun podcaster--collect-podcasts ()
   (podcaster--get-feeds podcaster--feeds-url))
@@ -131,7 +130,8 @@ end tell" url)))
          (titles (mapcar #'car items))
          (title (completing-read "Podcasts" titles))
          (item (cdr (assoc-string title items))))
-    (ignore-errors (podcaster-stop))
+    (when (ignore-errors (podcaster--player-process))
+      (podcaster-stop))
     (podcaster--play-podcast item)))
 
 (defun podcaster--stop-itunes ()
