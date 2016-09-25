@@ -90,9 +90,9 @@ to open mp3 URL."
 (defun podcaster--get-feeds (urls)
   (let ((feeds (mapcan #'podcaster--get-feeds-from-url urls)))
     (sort feeds (lambda (item1 item2)
-                  (let ((pubdate1 (float-time (date-to-time (plist-get (cdr item1) :pubdate))))
-                        (pubdate2 (float-time (date-to-time (plist-get (cdr item2) :pubdate)))))
-                    (> pubdate1 pubdate2))))))
+                  (let ((pubdate1 (date-to-time (plist-get (cdr item1) :pubdate)))
+                        (pubdate2 (date-to-time (plist-get (cdr item2) :pubdate))))
+                    (time-less-p pubdate2 pubdate1 ))))))
 
 ;; (podcaster--get-feeds '("https://ipn.li/kernelpanic/feed" "http://sachachua.com/blog/tag/emacs-chat/podcast"))
 
@@ -100,7 +100,7 @@ to open mp3 URL."
   (podcaster--get-feeds podcaster--feeds-urls))
 
 (defun podcaster--mp3-player-command (cmd url)
-  (cond ((member cmd '("avplay" "ffplay"))
+  (cond ((member (file-name-nondirectory cmd) '("avplay" "ffplay"))
          (list cmd "-autoexit" "-nodisp" url))
         (t
          (error "'%s' is not supported!!" cmd))))
