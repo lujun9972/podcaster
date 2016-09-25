@@ -3,7 +3,7 @@
 ;; Copyright (C) 2016 by lujun9972
 
 ;; Author: DarkSun <lujun9972@gmail.com>
-;; URL: https://github.com/syohex/emacs-podcaster
+;; URL: https://github.com/lujun9972/podcaster
 ;; Version: 0.01
 ;; Package-Requires: ((cl-lib "0.5"))
 
