@@ -5,7 +5,7 @@
 ;; Author: DarkSun <lujun9972@gmail.com>
 ;; URL: https://github.com/syohex/emacs-podcaster
 ;; Version: 0.01
-;; Package-Requires: ((helm "1.0") (cl-lib "0.5"))
+;; Package-Requires: ((cl-lib "0.5"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 
 ;; podcaster.el is a emacs podcast client
 ;;
-;; podcaster.el provides showing podscasts list with helm interface.
+;; podcaster.el provides showing podscasts list.
 ;; Its actions are
 ;;   - Play podcast mp3(requires `avplay' or `ffplay' or `itunes')
 ;;   - Browse podcast page
@@ -32,7 +32,6 @@
 
 ;;; Code:
 
-(require 'helm)
 (require 'xml)
 (require 'url)
 (require 'cl-lib)
@@ -96,17 +95,6 @@ to open mp3 URL."
 (defun podcaster--collect-podcasts ()
   (podcaster--get-feeds podcaster--feeds-url))
 
-(defun podcaster--format-pubdate (pubdate)
-  (if (string-match "\\`\\([a-zA-Z]+\\), \\([0-9]+\\) \\([a-zA-Z]+\\) \\([0-9]+\\)" pubdate)
-      (match-string-no-properties 0 pubdate)
-    pubdate))
-
-(defun podcaster--persistent-action (item)
-  (with-help-window (help-buffer)
-    (princ (format "[%s]\n%s"
-                   (podcaster--format-pubdate (plist-get item :pubdate))
-                   (plist-get item :summary)))))
-
 (defun podcaster--mp3-player-command (cmd url)
   (cond ((member cmd '("avplay" "ffplay"))
          (list cmd "-autoexit" "-nodisp" url))
@@ -135,21 +123,15 @@ end tell" url)))
              (podcaster--mp3-player-command podcaster-mp3-player mp3-url))
       (run-hook-with-args 'podcaster-play-podcast-hook item))))
 
-(defun podcaster--browse-page (item)
-  (let ((link (plist-get item :link)))
-    (browse-url link)))
-
-(defvar helm-podcaster-source
-  '((name . "Podcaster Podcasts")
-    (candidates . podcaster--collect-podcasts)
-    (persistent-action . podcaster--persistent-action)
-    (action . (("Play Podcast" . podcaster--play-podcast)
-               ("Browse Podcast Page" . podcaster--browse-page)))))
 
 ;;;###autoload
 (defun podcaster ()
   (interactive)
-  (helm :sources '(helm-podcaster-source) :buffer "*podcaster*"))
+  (let* ((items (podcaster--collect-podcasts))
+         (titles (mapcar #'car items))
+         (title (completing-read "Podcasts" titles))
+         (item (cdr (assoc-string title items))))
+    (podcaster--play-podcast item)))
 
 (defun podcaster--stop-itunes ()
   (do-applescript
