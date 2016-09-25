@@ -19,6 +19,3 @@ Podcaster is an Emacs podcast client which is derived from syohex's [[https://gi
 1. customize =podcaster--feeds-url= to the RSS feed
 
 2. execute =M-x podcaster=
-
-* TASK
-[ ] support multi-rss
