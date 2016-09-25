@@ -27,7 +27,6 @@
 ;; podcaster.el provides showing podscasts list.
 ;; Its actions are
 ;;   - Play podcast mp3(requires `avplay' or `ffplay' or `itunes')
-;;   - Browse podcast page
 ;;
 
 ;;; Code:
