@@ -42,8 +42,8 @@
   "podcaster client"
   :group 'applications)
 
-(defcustom podcaster-mp3-player (or (and (executable-find "avplay") "avplay")
-                                    (and (executable-find "ffplay") "ffplay"))
+(defcustom podcaster-mp3-player (or (executable-find "avplay")
+                                    (executable-find "ffplay"))
   "MP3 player for playing podcast. The player should support
 to open mp3 URL."
   :type 'string
@@ -109,7 +109,6 @@ to open mp3 URL."
   (eq system-type 'darwin))
 
 (defun podcaster--play-itunes (url)
-  (interactive "")
   (do-applescript
    (format "
 tell application \"iTunes\"
