@@ -88,7 +88,11 @@ to open mp3 URL."
       (mapcar #'podcaster--construct-item items))))
 
 (defun podcaster--get-feeds (urls)
-  (mapcan #'podcaster--get-feeds-from-url urls))
+  (let ((feeds (mapcan #'podcaster--get-feeds-from-url urls)))
+    (sort feeds (lambda (item1 item2)
+                  (let ((pubdate1 (float-time (date-to-time (plist-get (cdr item1) :pubdate))))
+                        (pubdate2 (float-time (date-to-time (plist-get (cdr item2) :pubdate)))))
+                    (> pubdate1 pubdate2))))))
 
 ;; (podcaster--get-feeds '("https://ipn.li/kernelpanic/feed" "http://sachachua.com/blog/tag/emacs-chat/podcast"))
 
