@@ -54,12 +54,11 @@ to open mp3 URL."
   :type 'hook
   :group 'podcaster)
 
-(defcustom podcaster--feeds-url  "https://ipn.li/kernelpanic/feed"
-  "The RSS Feed URL"
-  :type 'string
+(defcustom podcaster--feeds-urls '("https://ipn.li/kernelpanic/feed" "http://sachachua.com/blog/tag/emacs-chat/podcast" )
+  "The RSS Feed URL list"
+  :type 'list
   :group 'podcaster)
-
-;; (setq podcaster--feeds-url   "http://sachachua.com/blog/tag/emacs-chat/podcast" )
+;; (setq podcaster--feeds-urls '("https://ipn.li/kernelpanic/feed" "http://sachachua.com/blog/tag/emacs-chat/podcast" ))
 
 (defsubst podcaster--extract-tag-value (tag tree)
   (cadr (assoc-default tag tree)))
@@ -79,19 +78,22 @@ to open mp3 URL."
             (list :title title :link link :summary summary
                   :pubdate pubdate :mp3-url mp3-url)))))
 
-(defun podcaster--get-feeds (url)
+(defun podcaster--get-feeds-from-url (url)
   (let* ((feed (nnrss-fetch url))
          (items (nnrss-find-el 'item feed))
          (new-feed-url (nth 2 (car (nnrss-find-el 'itunes:new-feed-url feed)))))
     (if (and new-feed-url
              (not (equal url new-feed-url))) ;some rss feed have the same value
-        (podcaster--get-feeds new-feed-url)
+        (podcaster--get-feeds-from-url new-feed-url)
       (mapcar #'podcaster--construct-item items))))
 
-;; (podcaster--get-feeds  "http://sachachua.com/blog/tag/emacs-chat/podcast")
+(defun podcaster--get-feeds (urls)
+  (mapcan #'podcaster--get-feeds-from-url urls))
+
+;; (podcaster--get-feeds '("https://ipn.li/kernelpanic/feed" "http://sachachua.com/blog/tag/emacs-chat/podcast"))
 
 (defun podcaster--collect-podcasts ()
-  (podcaster--get-feeds podcaster--feeds-url))
+  (podcaster--get-feeds podcaster--feeds-urls))
 
 (defun podcaster--mp3-player-command (cmd url)
   (cond ((member cmd '("avplay" "ffplay"))
