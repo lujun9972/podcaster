@@ -6,7 +6,7 @@
 
 * Podcaster
 
-Podcaster is an Emacs podcast client.
+Podcaster is an Emacs podcast client. It is derived from syohex's emacs-rebuildfm.
 
 * Usage
 
