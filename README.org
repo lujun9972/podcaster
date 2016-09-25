@@ -1,0 +1,15 @@
+#+TITLE: README
+#+AUTHOR: lujun9972
+#+CATEGORY: podcaster.el
+#+DATE: [2016-09-25 日 19:41]
+#+OPTIONS: ^:{}
+
+* Podcaster
+
+Podcaster is an Emacs podcast client.
+
+* Usage
+
+1. customize =podcaster--feeds-url= to the RSS feed
+
+2. execute =M-x podcaster=
