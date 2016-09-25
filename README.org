@@ -10,6 +10,10 @@ Podcaster is an Emacs podcast client which is derived from syohex's emacs-rebuil
 
 [[podcaster.png]]
 
+* Dependency
+
++ ffplayer
+
 * Usage
 
 1. customize =podcaster--feeds-url= to the RSS feed
