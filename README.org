@@ -12,7 +12,7 @@ Podcaster is an Emacs podcast client which is derived from syohex's [[https://gi
 
 * Dependency
 
-+ ffplayer
++ ffplay
 
 * Usage
 
