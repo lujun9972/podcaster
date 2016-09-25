@@ -131,6 +131,7 @@ end tell" url)))
          (titles (mapcar #'car items))
          (title (completing-read "Podcasts" titles))
          (item (cdr (assoc-string title items))))
+    (ignore-errors (podcaster-stop))
     (podcaster--play-podcast item)))
 
 (defun podcaster--stop-itunes ()
