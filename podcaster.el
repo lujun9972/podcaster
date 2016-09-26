@@ -56,11 +56,11 @@ to open mp3 URL."
   :type 'hook
   :group 'podcaster)
 
-(defcustom podcaster--feeds-urls '("https://ipn.li/kernelpanic/feed" "http://sachachua.com/blog/tag/emacs-chat/podcast" )
+(defcustom podcaster-feeds-urls '("https://ipn.li/kernelpanic/feed" "http://sachachua.com/blog/tag/emacs-chat/podcast" )
   "The RSS Feed URL list"
   :type 'list
   :group 'podcaster)
-;; (setq podcaster--feeds-urls '("https://ipn.li/kernelpanic/feed" "http://sachachua.com/blog/tag/emacs-chat/podcast" ))
+;; (setq podcaster-feeds-urls '("https://ipn.li/kernelpanic/feed" "http://sachachua.com/blog/tag/emacs-chat/podcast" ))
 
 (defsubst podcaster--extract-tag-value (tag tree)
   (cadr (assoc-default tag tree)))
@@ -99,7 +99,7 @@ to open mp3 URL."
 ;; (podcaster--get-feeds '("https://ipn.li/kernelpanic/feed" "http://sachachua.com/blog/tag/emacs-chat/podcast"))
 
 (defun podcaster--collect-podcasts ()
-  (podcaster--get-feeds podcaster--feeds-urls))
+  (podcaster--get-feeds podcaster-feeds-urls))
 
 (defun podcaster--mp3-player-command (cmd url)
   (cond ((member (file-name-nondirectory cmd) '("avplay" "ffplay"))
