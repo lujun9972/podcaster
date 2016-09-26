@@ -42,7 +42,9 @@
   "podcaster client"
   :group 'applications)
 
-(defcustom podcaster-mp3-player (or (executable-find "avplay")
+(defcustom podcaster-mp3-player (or (when (eq system-type 'darwin)
+                                      "itunes")
+                                    (executable-find "avplay")
                                     (executable-find "ffplay"))
   "MP3 player for playing podcast. The player should support
 to open mp3 URL."
@@ -105,8 +107,8 @@ to open mp3 URL."
         (t
          (error "'%s' is not supported!!" cmd))))
 
-(defsubst podcaster--macosx-p ()
-  (eq system-type 'darwin))
+(defsubst podcaster--use-itunes-p ()
+  (string= "itnues" podcaster-mp3-player))
 
 (defun podcaster--play-itunes (url)
   (do-applescript
@@ -119,7 +121,7 @@ end tell" url)))
 (defun podcaster--play-podcast (item)
   (let ((mp3-url (plist-get item :mp3-url))
         (buf (get-buffer-create "*podcaster mp3*")))
-    (if (podcaster--macosx-p)
+    (if (podcaster--use-itunes-p)
         (podcaster--play-itunes mp3-url)
       (apply 'start-file-process
              "podcaster-mp3" buf
@@ -157,7 +159,7 @@ end tell" url)))
 (defun podcaster-stop ()
   (interactive)
   (when (yes-or-no-p "Stop MP3 Player? ")
-    (if (podcaster--macosx-p)
+    (if (podcaster--use-itunes-p)
         (podcaster--stop-itunes)
       (let ((proc (podcaster--player-process)))
         (kill-process proc)))))
@@ -171,7 +173,7 @@ end tell" url)))
 ;;;###autoload
 (defun podcaster-pause ()
   (interactive)
-  (if (podcaster--macosx-p)
+  (if (podcaster--use-itunes-p)
       (podcaster--playpause-itunes)
     (let ((proc (podcaster--player-process)))
       (signal-process proc 'SIGSTOP))))
@@ -179,7 +181,7 @@ end tell" url)))
 ;;;###autoload
 (defun podcaster-resume ()
   (interactive)
-  (if (podcaster--macosx-p)
+  (if (podcaster--use-itunes-p)
       (podcaster--playpause-itunes)
     (let ((proc (podcaster--player-process)))
       (signal-process proc 'SIGCONT))))
