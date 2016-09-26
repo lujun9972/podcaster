@@ -90,7 +90,7 @@ to open mp3 URL."
       (mapcar #'podcaster--construct-item items))))
 
 (defun podcaster--get-feeds (urls)
-  (let ((feeds (mapcan #'podcaster--get-feeds-from-url urls)))
+  (let ((feeds (cl-mapcan #'podcaster--get-feeds-from-url urls)))
     (sort feeds (lambda (item1 item2)
                   (let ((pubdate1 (date-to-time (plist-get (cdr item1) :pubdate)))
                         (pubdate2 (date-to-time (plist-get (cdr item2) :pubdate))))
