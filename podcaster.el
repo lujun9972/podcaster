@@ -108,7 +108,7 @@ to open mp3 URL."
          (error "'%s' is not supported!!" cmd))))
 
 (defsubst podcaster--use-itunes-p ()
-  (string= "itnues" podcaster-mp3-player))
+  (string= "itunes" podcaster-mp3-player))
 
 (defun podcaster--play-itunes (url)
   (do-applescript
