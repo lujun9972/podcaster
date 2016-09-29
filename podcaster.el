@@ -1,4 +1,4 @@
-;;; podcaster.el --- Emacs podcast client -*- lexical-binding: t; -*-
+;;; podcaster.el --- Podcast client -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016 by lujun9972
 
@@ -22,7 +22,7 @@
 
 ;;; Commentary:
 
-;; podcaster.el is an emacs podcast client which is derived from syohex's emacs-rebuildfm
+;; podcaster.el is an podcast client which is derived from syohex's emacs-rebuildfm
 ;;
 ;; podcaster.el provides showing podscasts list.
 ;; Its actions are
@@ -46,21 +46,22 @@
                                       "itunes")
                                     (executable-find "avplay")
                                     (executable-find "ffplay"))
-  "MP3 player for playing podcast. The player should support
-to open mp3 URL."
+  "MP3 player for playing podcast.
+The player should be able to open an mp3 URL."
   :type 'string
   :group 'podcaster)
 
 (defcustom podcaster-play-podcast-hook nil
-  "Hook that gets run after podcast is played"
+  "Hook that gets run after podcast is played."
   :type 'hook
   :group 'podcaster)
 
-(defcustom podcaster-feeds-urls '("https://ipn.li/kernelpanic/feed" "http://sachachua.com/blog/tag/emacs-chat/podcast" )
-  "The RSS Feed URL list"
+(defcustom podcaster-feeds-urls
+  '("https://ipn.li/kernelpanic/feed"
+    "http://sachachua.com/blog/tag/emacs-chat/podcast" )
+  "The RSS Feed URL list."
   :type 'list
   :group 'podcaster)
-;; (setq podcaster-feeds-urls '("https://ipn.li/kernelpanic/feed" "http://sachachua.com/blog/tag/emacs-chat/podcast" ))
 
 (defsubst podcaster--extract-tag-value (tag tree)
   (cadr (assoc-default tag tree)))
@@ -131,10 +132,11 @@ end tell" url)))
 
 ;;;###autoload
 (defun podcaster ()
+  "Play podcasts."
   (interactive)
   (let* ((items (podcaster--collect-podcasts))
          (titles (mapcar #'car items))
-         (title (completing-read "Podcasts" titles))
+         (title (completing-read "Podcasts: " titles))
          (item (cdr (assoc-string title items))))
     (when (ignore-errors (podcaster--player-process))
       (podcaster-stop))
@@ -157,6 +159,7 @@ end tell" url)))
 
 ;;;###autoload
 (defun podcaster-stop ()
+  "Stop the currently-playing podcast."
   (interactive)
   (when (yes-or-no-p "Stop MP3 Player? ")
     (if (podcaster--use-itunes-p)
@@ -180,6 +183,7 @@ end tell" url)))
 
 ;;;###autoload
 (defun podcaster-resume ()
+  "Resume the currently-playing podcast."
   (interactive)
   (if (podcaster--use-itunes-p)
       (podcaster--playpause-itunes)
