@@ -52,7 +52,7 @@ The player should be able to open an mp3 URL."
   :group 'podcaster)
 
 (defcustom podcaster-mp3-player-extra-params nil
-  "extra params for MP3 player.
+  "Extra params for MP3 player.
 It should be a list of params which make the player playing mp3 without gui and quit automatically
 If the player is avplay or ffplay or itunes, you don't have to set the params"
   :type '(repeat string)
