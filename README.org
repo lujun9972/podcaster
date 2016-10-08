@@ -18,4 +18,9 @@ Podcaster is an Emacs podcast client which is derived from syohex's [[https://gi
 
 1. customize =podcaster-feeds-urls= to the list of RSS feeds
 
-2. execute =M-x podcaster=
+2. (optional) set the =podcaster-mp3-player= to your favorite mp3 player
+
+3. (optional) if the =podcaster-mp3-player= is not avplay, ffplay or itunes, maybe you should customize =podcaster-mp3-player-extra-params= to make the player playing without gui and quit automatically
+
+4. execute =M-x podcaster=
+
