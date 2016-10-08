@@ -51,6 +51,14 @@ The player should be able to open an mp3 URL."
   :type 'string
   :group 'podcaster)
 
+(defcustom podcaster-mp3-player-extra-params nil
+  "extra params for MP3 player.
+It should be a list of params which make the player playing mp3 without gui and quit automatically
+If the player is avplay or ffplay or itunes, you don't have to set the params"
+  :type '(repeat string)
+  :group 'podcaster)
+
+
 (defcustom podcaster-play-podcast-hook nil
   "Hook that gets run after podcast is played."
   :type 'hook
@@ -103,10 +111,11 @@ The player should be able to open an mp3 URL."
   (podcaster--get-feeds podcaster-feeds-urls))
 
 (defun podcaster--mp3-player-command (cmd url)
-  (cond ((member (file-name-nondirectory cmd) '("avplay" "ffplay"))
-         (list cmd "-autoexit" "-nodisp" url))
-        (t
-         (error "'%s' is not supported!!" cmd))))
+  (let ((extra-params podcaster-mp3-player-extra-params))
+    (when (member (file-name-nondirectory cmd) '("avplay" "ffplay"))
+      (cl-pushnew "-autoexit" extra-params)
+      (cl-pushnew "-nodisp" extra-params))
+    `(,cmd ,@extra-params ,url)))
 
 (defsubst podcaster--use-itunes-p ()
   (string= "itunes" podcaster-mp3-player))
