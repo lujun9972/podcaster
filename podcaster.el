@@ -77,10 +77,11 @@ If the player is avplay or ffplay or itunes, you don't have to set the params"
 (defsubst podcaster--extract-tag-attribute (tag attribute tree)
   (assoc-default attribute (car (assoc-default tag tree))))
 
-(defsubst podcaster--construct-item (item)
+(defsubst podcaster--construct-item (item &optional channel-title)
   (let ((tree (cl-remove-if-not (lambda (e)
-                                  (and e (listp e))) item)))
-    (let ((title (podcaster--extract-tag-value 'title tree))
+                                  (and e (listp e))) item))
+        (channel-title (or channel-title "")))
+    (let ((title (concat channel-title " - " (podcaster--extract-tag-value 'title tree)))
           (link  (podcaster--extract-tag-value 'link tree))
           (pubdate (podcaster--extract-tag-value 'pubDate tree))
           (summary (podcaster--extract-tag-value 'summary tree))
@@ -89,14 +90,20 @@ If the player is avplay or ffplay or itunes, you don't have to set the params"
             (list :title title :link link :summary summary
                   :pubdate pubdate :mp3-url mp3-url)))))
 
+(defun podcaster--get-feeds-from-channel (channel)
+  (let* ((items (nnrss-find-el 'item channel))
+         (channel-title (podcaster--extract-tag-value 'title channel)))
+    (mapcar (lambda (item) (podcaster--construct-item item channel-title))  items )))
+
 (defun podcaster--get-feeds-from-url (url)
   (let* ((feed (nnrss-fetch url))
-         (items (nnrss-find-el 'item feed))
-         (new-feed-url (nth 2 (car (nnrss-find-el 'itunes:new-feed-url feed)))))
+         (channels (nnrss-find-el 'channel feed))
+         (new-feed-url (nth 2 (car (nnrss-find-el 'itunes:new-feed-url feed))))
+         (channel-title ()))
     (if (and new-feed-url
              (not (equal url new-feed-url))) ;some rss feed have the same value
         (podcaster--get-feeds-from-url new-feed-url)
-      (mapcar #'podcaster--construct-item items))))
+      (cl-mapcan #'podcaster--get-feeds-from-channel channels))))
 
 (defun podcaster--get-feeds (urls)
   (let ((feeds (cl-mapcan #'podcaster--get-feeds-from-url urls)))
