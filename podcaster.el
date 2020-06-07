@@ -31,6 +31,7 @@
 
 ;;; Code:
 
+(require 'subr-x)
 (require 'xml)
 (require 'url)
 (require 'cl-lib)
@@ -72,7 +73,7 @@ If the player is avplay or ffplay or itunes, you don't have to set the params"
   :group 'podcaster)
 
 (defsubst podcaster--extract-tag-value (tag tree)
-  (cadr (assoc-default tag tree)))
+  (string-join (cdr (assoc-default tag tree))))
 
 (defsubst podcaster--extract-tag-attribute (tag attribute tree)
   (assoc-default attribute (car (assoc-default tag tree))))
